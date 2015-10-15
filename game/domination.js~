@@ -1,0 +1,14 @@
+var redCounter = 0;
+var bluCounter = 0;
+
+
+
+function init() {
+
+}
+
+
+
+function loop() {
+    
+}
