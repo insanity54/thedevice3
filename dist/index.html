@@ -2,16 +2,17 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
-    <!-- STYLESHEETS -->
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+  <link rel="stylesheet" href="/css/theme.css">
 
 </head>
 
@@ -19,41 +20,80 @@
 
 <body>
 
-    <div class="container center-text">
-        <!-- PASSWORD BOX -->
-        <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-lock"></i></span>
-            <input type="password" id="form-pass" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+  <div class="container center-text">
+    <!-- PASSWORD BOX -->
+    <div id="password" class="input-group">
+      <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-lock"></i></span>
+      <input type="password" id="form-pass" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+    </div>
+
+    <br>
+    <!-- MODE BUTTONS -->
+    <div class="text-center">
+      <button type="button" id="btn-bomb" class="btn btn-default"><i class="glyphicon glyphicon-time"></i> Counter-Strike Bomb</button>
+      <button type="button" id="btn-domi" class="btn btn-default"><i class="glyphicon glyphicon-fire"></i> Domination</button>
+      <button type="button" id="btn-inte" class="btn btn-default"><i class="glyphicon glyphicon-briefcase"></i> Intel</button>
+    </div>
+
+    <!-- DOMINATION TIMER -->
+    <div id="timer" class="well">
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="text-center" id="timer-red">
+            <ul>
+              <li id="timer-red-caption">Red Team</li>
+              <li id="timer-red-display">13:56</li>
+            </ul>
+          </div>
         </div>
 
-        <br>
-        <!-- MODE BUTTONS -->
-        <button type="button" id="btn-bomb" class="btn btn-default"><i class="glyphicon glyphicon-time"></i> Counter-Strike Bomb</button>
-        <button type="button" id="btn-domi" class="btn btn-default"><i class="glyphicon glyphicon-fire"></i> Domination</button>
-        <button type="button" id="btn-inte" class="btn btn-default"><i class="glyphicon glyphicon-briefcase"></i> Intel</button>
-
-        
-        <!-- FLASHES -->
-        <div class="flashes">
-            <div id="flash-succ" class="alert alert-success" role="alert">success</div>
-            <div id="flash-info" class="alert alert-info" role="alert">info</div>
-            <div id="flash-warn" class="alert alert-warning" role="alert">warning</div>
-            <div id="flash-dang" class="alert alert-danger" role="alert">danger</div>
+        <div class="col-xs-6">
+          <div class="text-center" id="timer-blu">
+            <ul>
+              <li id="timer-blu-caption">Blu Team</li>
+              <li id="timer-blu-display">13:56</li>
+            </ul>
+          </div>
         </div>
+      </div>
+    </div>
 
-        
-        
+
+    <!-- START / STOP / PAUSE -->
+    <div class="controls text-center">
+      <button type="button" id="btn-stop" class="btn btn-danger"><i class="glyphicon glyphicon-stop"></i> Stop</button>
+      <button type="button" id="btn-play" class="btn btn-success"><i class="glyphicon glyphicon-play"></i> Play</button>
+      <button type="button" id="btn-paus" class="btn btn-warning"><i class="glyphicon glyphicon-pause"></i> Pause</button>
     </div>
 
 
 
+    <!-- CONSOLE -->
+    <div id="log">
+      <ul>
+      </ul>
+    </div>
 
 
-    <!-- SCRIPTS -->
-    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
-    <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/bower_components/socket.io-client/socket.io.js"></script>
-    <script type="text/javascript" src="/js/main.js"></script>
+    <!-- test buttons -->
+    <div id="test-buttons">
+      <button type="button" id="btn-test-red" class="btn btn-danger btn-xs">red</button>
+      <button type="button" id="btn-test-blu" class="btn btn-success btn-xs">blue</button>
+    </div>
+
+  </div>
+  <!-- /.container -->
+
+
+
+
+
+  <!-- SCRIPTS -->
+  <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/bower_components/socket.io-client/socket.io.js"></script>
+  <script type="text/javascript" src="/bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="/js/main.js"></script>
 
 </body>
 

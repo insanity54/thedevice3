@@ -1,4 +1,6 @@
 var moment = require('moment');
+var redis = require('redis').createClient();
+var button = require('./button');
 
 
 // loop
@@ -48,55 +50,98 @@ var moment = require('moment');
 var redCounter = 0;
 var bluCounter = 0;
 var timeToWin;
+var timeStart;
 var timeLastIncrement;
+var isInProgress;
 
 
 var testWinCondition = function testWinCondition() {
-    if (redCounter >= timeToWin) return endGame('red');
-    if (bluCounter >= timeToWin) return endGame('blu');
+    console.log('  * test win condition (' + redCounter + ' >= (' + timeStart + ' + ' + timeToWin + '))');
+    if (redCounter >= (timeStart + timeToWin)) return endGame('red');
+    if (bluCounter >= (timeStart + timeToWin)) return endGame('blu');
 };
     
-var endGame = function increment() {
-    isGameOn = 0;
+var endGame = function endGame(color) {
+    console.log("WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER WINNER " + color);
+    isInProgress = 0;
+    redis.set('game:isInProgress', isInProgress);
+
+    if (color) redis.publish('game', 'domi win ' + color);
+    redis.publish('game', 'domi end');
 };
 
 var incrementCounter = function incrementCounter() {
-    if (button.isRed) calcIncrement('red');
-    if (button.isBlu) calcIncrement('blu');
+    console.log('incrementCounter runs. btnred- ' + button.getActiveColor() + ' btnblu-' + button.getActiveColor());
+    if (button.getActiveColor() == 'red') calcIncrement('red');
+    if (button.getActiveColor() == 'blu') calcIncrement('blu');
 };
 
 var calcIncrement = function calcIncrement(color) {
-    var incrementAmount = moment().valueOf() - timeLastIncrement;
-    if (color === 'red') return redCounter += incrementAmount;
-    if (color === 'blu') return bluCounter += incrementAmount;
+    console.log('calcIncrement ' + color);
+    var incrementAmount = moment().valueOf() - (timeLastIncrement || 0);
+    console.log('incrBy ' + incrementAmount);
+    if (color === 'red') redCounter += incrementAmount;
+    if (color === 'blu') bluCounter += incrementAmount;
+    timeLastIncrement = moment().valueOf();
 };
+
+var updateNetwork = function() {
+    var redPercentage = parseInt((redCounter / timeToWin) * 100); // get red percentage
+    var bluPercentage = parseInt((bluCounter / timeToWin) * 100); // get blu percentage
+    redis.set('game:isInProgress', isInProgress);
+    redis.publish('game',
+			'domi stat ' +
+			'redc=' + redCounter + ' ' +
+			'bluc=' + bluCounter + ' ' +
+			'redp=' + parseInt((redCounter / timeToWin) * 100) + ' ' +
+			'blup=' + parseInt((redCounter / timeToWin) * 100));
+};
+
+
+var debug = function() {
+    console.log('(dominatino.js) DEBUG - timeLastIncrement ' + timeLastIncrement + ' ttw ' + timeToWin + ', timeStart ' + timeStart);
+}
 
 var begin = function begin(time) {
 
-    isGameOn = 1;
-    timeToWin = time || ((1000 * 60) * 15); // 15 minute default
+    console.log('domination.js begin');
+    
+    isInProgress = 1;
+    timeToWin = time || ((1000 * 60) * 1); // 1 minute default
+    timeStart = moment().valueOf();
+    
     
     // GAME LOOP
     // ---------
     //
     // check every 1 second
     var gameLoop = setInterval(function() {
-	    
+
 	    testWinCondition();
 
 	    incrementCounter();
+
+	    debug();
 	    
 	    // stop loop if game over
-	    if (!isGameOn) {
+	    if (!isInProgress) {
 		clearInterval(gameLoop);
-	    }	
+	    }
+
+	    updateNetwork();
+
+	    
 	}, 1000);
 };
 
 
-module.exports = {
-    begin: begin
+var stop = function stop() {
+    isInProgress = 0;
+    redis.set('game:isInProgress', 0);
 };
-	    
 
 
+module.exports = {
+    begin: begin,
+    stop: stop
+};

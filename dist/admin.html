@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>THE DEVICE (admin)</title>
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
+
+</head>
+
+
+
+<body>
+
+  <div class="container center-text">
+    <!-- PASSWORD BOX -->
+    <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-lock"></i></span>
+      <input type="password" id="form-pass" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+    </div>
+
+    <br>
+    <p>User password <span id="info-pass" class="label label-primary">n/a</span></p>
+    <p>Mode <span id="info-mode" class="label label-primary">n/a</span></p>
+    <p>Action <span id="info-acti" class="label label-primary">n/a</span></p>
+    <p>Message <span id="info-mess" class="label label-primary">n/a</span></p>
+
+    <!-- FLASHES -->
+    <div class="flashes">
+      <div id="flash-succ" class="alert alert-success" role="alert">success</div>
+      <div id="flash-info" class="alert alert-info" role="alert">info</div>
+      <div id="flash-warn" class="alert alert-warning" role="alert">warning</div>
+      <div id="flash-dang" class="alert alert-danger" role="alert">danger</div>
+    </div>
+
+
+
+  </div>
+
+
+
+
+
+  <!-- SCRIPTS -->
+  <script type="text/javascript" src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script type="text/javascript" src="/bower_components/socket.io-client/socket.io.js"></script>
+  <script type="text/javascript" src="/js/admin.js"></script>
+
+</body>
+
+</html>

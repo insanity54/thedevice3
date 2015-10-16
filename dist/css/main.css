@@ -1,15 +1,59 @@
+#password {
+  margin-top: 15px;
+}
+
 #flash-succ {
-    display: none;
+  display: none;
 }
 
 #flash-info {
-    display: none;
+  display: none;
 }
 
 #flash-warn {
-    display: none;
+  display: none;
 }
 
 #flash-dang {
-    display: none;
+  display: none;
+}
+
+#log {
+  margin-top: 15px;
+  height: 250px;
+  width: 100%;
+  overflow: scroll;
+}
+
+#timer {
+  margin-top: 15px;
+}
+
+ul {
+  list-style: none;
+}
+
+
+li {
+  margin-left: -4px;
+}
+
+li.danger {
+  color: #C9302C;
+}
+
+li.success {
+  color: #449D44;
+}
+
+#timer-blu-display {
+  font-size: 50px;
+}
+
+#timer-red-display {
+  font-size: 50px;
+}
+
+.btn-blu {
+  
 }
