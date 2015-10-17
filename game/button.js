@@ -20,13 +20,25 @@ var setControl = function setControl(color) {
 	isRed = true;
     }
     console.log('results isBlu ' + isBlu + ' isRed ' + isRed);
-}
+};
  
 
-    var getActiveColor = function getActiveColor() {
-	if (isRed) return 'red';
-	if (isBlu) return 'blu';
-    }
+var getActiveColor = function getActiveColor() {
+    if (isRed) return 'red';
+    if (isBlu) return 'blu';
+};
+
+
+/**
+ *  reset the buttons to controlled by nobody
+ */
+var reset = function reset() {
+    isRed = false;
+    isBlu = false;
+};
+
+
+    
 
 
 redis.subscribe('game');
@@ -56,5 +68,6 @@ redis.on('message', function(channel, message) {
 
 
 module.exports = {
-    getActiveColor: getActiveColor
+    getActiveColor: getActiveColor,
+    reset: reset
 }

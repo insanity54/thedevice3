@@ -2,6 +2,7 @@ $(document).ready(function () {
 
   var socket = io();
   var activeMode = '';
+  console.log(moment().format());
 
   // MODE BUTTONS
   $("#btn-bomb").click(function () {
@@ -91,12 +92,43 @@ $(document).ready(function () {
     if (typeof(data.msg) !== 'undefined') return flash('success', data.msg);
     
     if (typeof(data.disp) !== 'undefined') return updateDisplay(data.disp);
-  })
+    if (typeof(data.end) !== 'undefined') return endGame();
+    if (typeof(data.win) !== 'undefined') return winGame(data);
+  });
+  
+  
+  
+  var winGame = function winGame(data) {
+    if (data.color == 'red') $("#timer-red ul").css("border", "3px solid goldenrod");
+    if (data.color == 'blu') $("#timer-blu ul").css("border", "3px solid goldenrod");
+  }
+  
+  var endGame = function endGame() {
+    console.log('end game');
+    $("#timer-red-display").html('');
+    $("#timer-blu-display").html('');
+    $("#timer-blu ul").css("border", "");
+    $("#timer-red ul").css("border", "");
+  }
   
   
   
   var updateDisplay = function updateDisplay(data) {
-    $("#timer-red-display") 
+    //console.log('updating display');
+    console.log(data);
+    // @todo optimize by only update if change since last update
+    
+    // crazy hax to get a properly formatted timer.
+    bluMinutes = moment.duration(parseInt(data.bluc)).format('mm');
+    bluSeconds = parseInt(moment.duration(parseInt(data.bluc)).asSeconds() % 60);
+    if (bluSeconds < 10) bluSeconds = '0' + bluSeconds.toString();
+    
+    redMinutes = moment.duration(parseInt(data.redc)).format('mm');
+    redSeconds = parseInt(moment.duration(parseInt(data.redc)).asSeconds() % 60);
+    if (redSeconds < 10) redSeconds = '0' + redSeconds.toString();
+    
+    $("#timer-red-display").html(redMinutes + ':' + redSeconds);
+    $("#timer-blu-display").html(bluMinutes + ':' + bluSeconds);
   }
   
   

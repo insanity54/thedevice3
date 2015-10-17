@@ -31,6 +31,7 @@
 
 ul {
   list-style: none;
+  padding-left: 0px;
 }
 
 
@@ -46,14 +47,36 @@ li.success {
   color: #449D44;
 }
 
+#timer-red ul {
+/*  border: 3px solid goldenrod;*/
+  border-radius: 5px;
+  animation: blink .5s step-end infinite alternate;
+}
+
+
+#timer-blu ul {
+/*  border: 3px solid goldenrod;*/
+  border-radius: 5px;
+  animation: blink .5s step-end infinite alternate; 
+}
+
 #timer-blu-display {
-  font-size: 50px;
+  font-size: 8vmin;
 }
 
 #timer-red-display {
-  font-size: 50px;
+  font-size: 8vmin;
 }
 
 .btn-blu {
   
 }
+
+
+@keyframes blink { 
+   50% { border-color: cyan; } 
+}
+/*
+table{ or other element you want
+    animation: blink .5s step-end infinite alternate;
+}*/

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <title>THE DEVICE</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
   <!-- STYLESHEETS -->
@@ -24,7 +24,7 @@
     <!-- PASSWORD BOX -->
     <div id="password" class="input-group">
       <span class="input-group-addon" id="basic-addon1"><i class="glyphicon glyphicon-lock"></i></span>
-      <input type="password" id="form-pass" class="form-control" placeholder="Password" aria-describedby="basic-addon1">
+      <input type="password" id="form-pass" class="form-control" placeholder="Admin Password" aria-describedby="basic-addon1">
     </div>
 
     <br>
@@ -93,6 +93,7 @@
   <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script type="text/javascript" src="/bower_components/socket.io-client/socket.io.js"></script>
   <script type="text/javascript" src="/bower_components/moment/moment.js"></script>
+  <script type="text/javascript" src="/bower_components/moment-duration-format/lib/moment-duration-format.js"></script>
   <script type="text/javascript" src="/js/main.js"></script>
 
 </body>

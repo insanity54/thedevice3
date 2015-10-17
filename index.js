@@ -6,10 +6,12 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var config = require('./config.json');
 var redis = require('redis');
-var game = require(path.join(__dirname, 'game'));
+var util = require('util');
+var EventEmitter = require('events');
+//var game = require(path.join(__dirname, 'game'));
 
-var red = redis.createClient();
-var red2 = redis.createClient();
+var publisher = redis.createClient();
+var subscriber = redis.createClient();
 app.use(express.static(path.join(__dirname, 'dist')));
 
 
@@ -98,19 +100,39 @@ var procGame = function procGame(data, cb) {
 
 
   //  access granted
-  console.log(data);
+  //console.log(data);
 
   // requested action start
   //   if game already in progress, return an error
   //   otherwise start requested game
   if (acti === 'star') {
       console.log('(index.js) requested action start');      
-    red.get('game:isInProgress', function (err, reply) {
-      if (err) return cb('database error! ' + err);
-      if (reply == 1) return cb('cant start game since game already in progress');
-      red.publish('game', mode + ' star');
-      return cb(null, mode + ' started');
-    });
+      publisher.get('game:isInProgress', function (err, reply) {
+	      if (err) return cb('database error! ' + err);
+	      if (reply == 1) {
+		  publisher.get('game:isPaused', function(err, reply) {
+			  if (err) return cb('database error! ' + err);
+			  if (reply == 1) {
+			      console.log('game paused so unpause');
+			      // game paused, unpause it
+			      publisher.publish('game', mode + ' star');
+			      return cb(null, mode + ' unpaused');
+			  }
+			  else {
+			      console.log('game not paused, err');
+			      publisher.publish('game', mode + ' star');
+			      return cb('cant start game since game already in progress');
+			  }
+		      });
+	      }
+
+	      // game is not in progress, start
+	      else {
+		  console.log('game not in progress, starting');
+		  publisher.publish('game', mode + ' star');
+		  return cb(null, mode + ' started');
+	      }
+	  });
   }
 
   // requested action stop
@@ -118,29 +140,36 @@ var procGame = function procGame(data, cb) {
   //   otherwise stop
   else if (acti === 'stop') {
       console.log('(index.js) requested action stop');
-    red.get('game:isInProgress', function (err, reply) {
+    publisher.get('game:isInProgress', function (err, reply) {
       if (err) return cb('database error! ' + err);
       if (reply == 0) return cb('cant start stop game since no game is running');
-      red.publish('game', mode + ' stop');
+      publisher.publish('game', mode + ' stop');
       return cb(null, mode + ' stopped');
     });
   }
 
   // requested action pause
   //   if game not started, return an error
-  //   if game already paused, return an error
+  //   if game already paused, unpause
   //   otherwise pause
   else if (acti == 'paus') {
       console.log('(index.js) requested action pause');      
-    red.get('game:isInProgress', function (err, reply) {
+    publisher.get('game:isInProgress', function (err, reply) {
       if (err) return cb('database error! ' + err);
       if (reply == 0) return cb('cant pause game since no game is in progress');
 
-      red.get('game:isPaused', function (err, reply) {
+      publisher.get('game:isPaused', function (err, reply) {
         if (err) return cb('database error! ' + err);
-        if (reply == 1) return cb('cant pause game since game is already paused');
-        red.publish('game', mode + ' paus');
-        return cb(null, mode + ' paused');
+        if (reply == 1) {
+	    publisher.publish('game', mode + ' paus');
+	    return cb(null, mode + ' unpaused');
+	}
+
+	// not paused so pause
+	else {
+	    publisher.publish('game', mode + ' paus')
+	    return cb(null, mode + ' paused');
+	}
       });
     });
   }
@@ -159,6 +188,11 @@ var procGame = function procGame(data, cb) {
 
 
 
+    var guiEvent = new EventEmitter();
+
+
+
+
 
 
 // listen for client connections
@@ -170,9 +204,14 @@ io.on('connection', function (socket) {
   socket.on('mode', function (data) {
 	  socket.broadcast.emit('admin', data);
 	  console.log(data);
-  });
+      });
 
-
+  guiEvent.on('guiUpdate', function(data) {
+	  console.log('  * socket sending guiUpdate ');
+	  console.log(data);
+	  socket.broadcast.emit('game', data);
+      });
+  
 
   socket.on('game', function (data) {
 	  //console.log(' (index.js) got game socket ' + data);
@@ -188,8 +227,8 @@ io.on('connection', function (socket) {
 
 
   socket.on('button', function(data) {
-	  if (data.blu) return red.publish('game', 'button blu');
-	  if (data.red) return red.publish('game', 'button red');
+	  if (data.blu) return publisher.publish('game', 'button blu');
+	  if (data.red) return publisher.publish('game', 'button red');
       });
 
   socket.on('disconnect', function (socket) {
@@ -203,38 +242,58 @@ io.on('connection', function (socket) {
 
 
 
-
-var updateWebUI = function updateWebUI() {
-
 // listen for messages from other modules
-red2.subscribe('game');
-red2.on('message', function(channel, message) {
-	if (channel == 'game') {
-	    message = message.split(' ');
+subscriber.subscribe('game');    
 
-	    console.log(message);
+
+
+//    socket.on('disconnect', function() {
+//	    //subscriber.quit();
+//	    console.log('socket DISCONNECT');
+//	    //	    sub.off();
+//	    console.log(ubscriber);
+//	});
+    
+
+
+subscriber.on('message', function(channel, message){ 
+	console.log('    >>>> updatewebui ' + channel + ' ' + message);
+	if (channel == 'game') {
 	    
+	    message = message.split(' ');
 	    var mode = message[0];
 	    var acti = message[1];
-	    var redc = message[2].split('=')[1];
-	    var bluc = message[3].split('=')[1];
-	    var redp = message[4].split('=')[1];
-	    var blup = message[5].split('=')[1];
+	    
+	    if (acti == 'stat') {
+		
+		console.log(message);
+		
+		var redc = message[2].split('=')[1];
+		var bluc = message[3].split('=')[1];
+		var redp = message[4].split('=')[1];
+		var blup = message[5].split('=')[1];
+		
 
-
-	    socket.emit('game', {
-
-	    //	    [ 'domi',
-	    //	      'stat',
-	    //	      'redc=1445030335965',
-	    //	      'bluc=0',
-	    //	      'redp=2408383893',
-	    //  'blup=2408383893' ]
+		guiEvent.emit('guiUpdate', { "disp": { "redc": redc, "bluc": bluc }});
+		//socket.emit('game', { "disp": { "red
+		
+	    }
+	    
+	    
+	    // game ended by admin
+	    else if (acti == 'end') {
+		guiEvent.emit('game', { "end": true });
+	    }
 
 	    
+	    // game ended by win condition
+	    else if (acti == 'win') {
+		var color = message[2];
+		guiEvent.emit('game', { "win": true, "color": color });
+	    }
 	}
     });
-}
+
 
 
 

@@ -2,11 +2,18 @@ var domination = require('./domination');
 var intel = require('./intel');
 var bomb = require('./bomb');
 var redis = require('redis');
+//var parseArgs = require('minimist');
 
-var red = redis.createClient();
+
+// listens for messages like, 'inte start'
+var subscriber = redis.createClient();
+
+// publishes states like, '?????
+var publisher = redis.createClient();
 
 
-red.subscribe('game');
+
+subscriber.subscribe('game');
 
 
 // when receiving a message such as
@@ -15,7 +22,7 @@ red.subscribe('game');
 // bomb stop
 // domi prep
 //   if valid command, carry out the operation
-red.on('message', function(channel, message) {
+subscriber.on('message', function(channel, message) {
 	//console.log('(./game/index.js) - got game message ' + message + ' on channel ' + channel);
 	if (channel === 'game') {
 
@@ -76,7 +83,7 @@ red.on('message', function(channel, message) {
 
 
 var start = function start(mode) {
-  console.log('(pseudo) starting mode ' + mode);
+    //console.log('(pseudo) starting mode ' + mode);
 
   if (mode == 'domi') return domination.begin();
   if (mode == 'bomb') return bomb.begin();
@@ -86,7 +93,7 @@ var start = function start(mode) {
 };
 
 var stop = function stop(mode) {
-  console.log('(pseudo) stopping mode ' + mode);
+    //console.log('(pseudo) stopping mode ' + mode);
 
   if (mode == 'domi') return domination.stop();
   if (mode == 'bomb') return bomb.stop();
@@ -96,9 +103,13 @@ var stop = function stop(mode) {
 };
 
 var pause = function pause(mode) {
-  console.log('(pseudo) pausing mode ' + mode);
+    //console.log('(pseudo) pausing mode ' + mode);
+    
+    if (mode == 'domi') return domination.pause();
+    if (mode == 'bomb') return bomb.pause();
+    if (mode == 'inte') return intel.stop();
 
-  return false;
+    return false;
 };
 
 var prep = function prep(mode) {
@@ -108,6 +119,25 @@ var prep = function prep(mode) {
     return false;
 };
     
+
+
+
+// @todo implement command line args if it satisfies
+//var argv = parseArgs(process.argv);
+
+//console.log(argv);
+
+//if (argv.d || argv.daemon) {
+    // start as daemon
+
+    // @todo it'll run as daemon anyway since redis subscribe clients will keep it running
+    //       so... stop redis at some point?
+    
+    //}
+
+
+
+
 
 module.exports = {
   "start": start,
