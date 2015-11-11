@@ -80,3 +80,11 @@ li.success {
 table{ or other element you want
     animation: blink .5s step-end infinite alternate;
 }*/
+
+#timer-blu-caption {
+  color: #008966
+}
+
+#timer-red-caption {
+  color: #E74C3C
+}

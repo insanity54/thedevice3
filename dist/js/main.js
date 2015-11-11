@@ -42,11 +42,21 @@ $(document).ready(function () {
   // GAME BUTTONS
   $("#btn-stop").click(function () {
     console.log('stop button clicked');
-    socket.emit('game', {
+    
+    // @todo this should happen somwehre else?
+    // if there is a border, clear it
+    // otherwise, emit over network
+    if ( $("#timer-blu ul").css("border-top-style") || $("#timer-red ul").css("border-top-style") ) {
+      console.log('clearing borders');
+      $("#timer-blu ul").css("border", "");
+      $("#timer-red ul").css("border", "");
+    } else {
+      socket.emit('game', {
       'pass': $("#form-pass").val(),
       'acti': 'stop',
       'mode': activeMode
     });
+    }
   });
 
   $("#btn-play").click(function () {

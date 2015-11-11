@@ -41,8 +41,8 @@ subscriber.on('message', function(channel, message) {
 	    }
 
 	    if (action !== 'star' && action !== 'stop' &&
-		action !== 'paus' && action !== 'prep') {
-		console.log('fail action check');
+		action !== 'paus' && action !== 'prep')
+		// message not for us
 		return false;
 	    }
 
@@ -56,8 +56,10 @@ subscriber.on('message', function(channel, message) {
 	    if (action === 'paus') return pause(mode);
 	    if (action === 'prep') return prep(mode);
 	    console.log('not taking action');
-	}
     });
+
+    
+
 
 
 
@@ -111,6 +113,7 @@ var pause = function pause(mode) {
 
     return false;
 };
+
 
 var prep = function prep(mode) {
     console.log('(pseudo) prep mode ' + mode);

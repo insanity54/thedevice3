@@ -70,8 +70,8 @@ var endGame = function endGame(color) {
     isInProgress = 0;
     red.set('game:isInProgress', isInProgress);
 
-    if (color) red.publish('game', 'domi win ' + color);
-    red.publish('game', 'domi end');
+    if (color) return red.publish('game', 'domi win ' + color);
+    return red.publish('game', 'domi end');
 };
 
 var incrementCounter = function incrementCounter() {
