@@ -11,16 +11,21 @@ uses Node.js and Redis
 
 Server/client model. The device itself runs the node and redis server. Clients (admin and player's cell phones) connect using a web browser. Using express, the node server serves pages which will dynamically update using sockets.io and jquery.
 
-index.js serves pages, handles socket.io connections, and pub/subs to redis.
+index.js serves pages, handles socket.io connections, and pub/subs to redis. game/*.js handles the gameplay of the different types of games
 
 
 ### Processes
 
 The device runs two node processes, and one redis process. These processes are built to be loosely coupled so in the future, redis server could be moved to a different place or sharded.
 
-* Process 0 `redis-server` is the redis server
-* Process 1 (node ./index.js) is the server which interacts with clients.
-* Process 2 (node ./game/index.js) is a redis listener which is not yet hashed out @TODO
+* Process 0 `pm2` handles running the other processes and keeping them alive
+* Process 1 `redis-server` is the redis server
+* Process 2 (node ./index.js) is the server which serves page to clients, handles socket.io, handles publishing to redis
+* Process 3 (node ./game/*.js) daemon which runs the game mode
+
+
+//* Process 2 (node ./game/index.js) is a redis listener which is not yet hashed out @TODO
+
 
 
 ### Detail
