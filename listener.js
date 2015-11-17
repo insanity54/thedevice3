@@ -35,9 +35,9 @@ var Listener = function() {
 /**
  * examples
  *
- * external modules can call Listener like this
+ * external modules can call Listener.
  *
- *   
+ *   this device should listen to 
  * var l = new Listener();
  * l.addListener('domi');
  * l.on('domi',  callback);

@@ -27,8 +27,13 @@ The device runs @todo n node processes, and one redis process. These processes a
 //* Process 2 (node ./game/index.js) is a redis listener which is not yet hashed out @TODO
 
 
+### Features
 
-### Detail
+Every device is assigned a set of features. These features are what the device _can_ provide to the network of devices. A game administrator, using the web GUI, is able to look at a list of all the devices on the device network, and set up how each individual device should interact with game events based on their available features.
+
+Features are assigned to devices based on the hardware of the device. For example, a device with two pushbuttons and no displays won't have an LCD feature, it would have an input feature. Hardware is defined in each device's [config.json](https://github.com/insanity54/thedevice3/wiki/config.json)
+
+
 
 
 #### Pub/Sub (Redis)
