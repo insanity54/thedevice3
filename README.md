@@ -16,7 +16,7 @@ index.js serves pages, handles socket.io connections, and pub/subs to redis. gam
 
 ### Processes
 
-The device runs two node processes, and one redis process. These processes are built to be loosely coupled so in the future, redis server could be moved to a different place or sharded.
+The device runs @todo n node processes, and one redis process. These processes are built to be loosely coupled so in the future, redis server could be moved to a different place or sharded.
 
 * Process 0 `pm2` handles running the other processes and keeping them alive
 * Process 1 `redis-server` is the redis server

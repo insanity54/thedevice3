@@ -202,6 +202,7 @@ var guiEvent = new EventEmitter();
 // listen for client connections
 io.on('connection', function (socket) {
   // log this client. first client connected is master, sets password
+  console.log('io connection');
   clients.push(socket.id);
 
 
@@ -324,6 +325,7 @@ subscriber.on('message', function (channel, message) {
 
 
 // start http server
-http.listen(3000, function () {
-  console.log('listening on 3000 port');
+var port = 3000;
+http.listen(port, function () {
+  console.log('listening on port ' + port);
 });
