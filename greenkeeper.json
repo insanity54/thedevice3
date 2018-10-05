@@ -1,0 +1,14 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "dist/bower_components/bootstrap/package.json",
+        "dist/bower_components/fuelux/package.json",
+        "dist/bower_components/moment-duration-format/package.json",
+        "dist/bower_components/socket.io-client/package.json",
+        "dist/bower_components/webcomponentsjs/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
