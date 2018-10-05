@@ -1,5 +1,7 @@
 # The D3VICE
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/insanity54/thedevice3.svg)](https://greenkeeper.io/)
+
 ## DEPRECATED. See https://github.com/doomsquadairsoft/d3vice-gameserver
 
 Airsoft multi-device that facilitates cool game modes from popular video games.
